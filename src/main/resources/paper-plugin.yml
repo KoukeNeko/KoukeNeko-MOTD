@@ -1,0 +1,11 @@
+name: KoukeNekoMOTD
+version: '${project.version}'
+main: dev.doeshing.koukeNekoMOTD.KoukeNekoMOTD
+api-version: '1.21'
+authors: [DoesHing]
+description: Custom MOTD system for Minecraft servers
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false

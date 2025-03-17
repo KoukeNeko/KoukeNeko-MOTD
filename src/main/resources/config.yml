@@ -1,0 +1,56 @@
+# KoukeNekoMOTD Plugin Configuration
+
+# 插件前綴，用於顯示訊息
+prefix: "&7[&b&l🕹️&7]&f"
+
+# 伺服器列表 MOTD 設定
+server_list_motd:
+  enabled: true
+  # 預設 MOTD (新玩家)
+  Default:
+    Description:
+      - "&6⚒ &f麻糬咕嚕嚕呼嚕嚕 &6⚒ &8| &e現實生存伺服器"
+      - "&7▸ &f季節: &a%rs_season_world% &8• &f挑戰自然環境 &8[&a%server_online%&7/&c%server_max_players%&8]"
+    Players:
+      Slots: # 尚未實作
+        - "&7» &6&l%online%&c&l/&6&l%max%"
+      Hover:
+        - "&6伺服器狀態:"
+        - "&7線上玩家: &a%server_online% &7/ &c%server_max_players%"
+        - "&7TPS: &a%server_tps_1%"
+        - "&7目前季節: &a%rs_season_world%"
+        - "&7下個季節: &e%rs_next_season_world%"
+        - "&7距離季節更替: &e%rs_days_until_next_season_world%天"
+  # 回歸玩家 MOTD (曾經連線過的 IP)
+  Personalized:
+    Description:
+      - "&6⚒ &f麻糬咕嚕嚕呼嚕嚕 &6⚒ &8| &e現實生存伺服器"
+      - "&7▸ &f歡迎回來 &e%player_displayname% &8• &f現實生存等待挑戰 &8[&a%server_online%&7/&c%server_max_players%&8]"
+    Players:
+      Slots: # 尚未實作
+        - "&7» &6&l%online%&c&l/&6&l%max%"
+      Hover:
+        - "&6伺服器狀態:"
+        - "&7線上玩家: &a%server_online% &7/ &c%server_max_players%"
+        - "&7TPS: &a%server_tps_1%"
+        - "&7目前季節: &a%rs_season_world%"
+        - "&7下個季節: &e%rs_next_season_world%"
+        - "&7距離季節更替: &e%rs_days_until_next_season_world%天"
+        - "&7目前日期: &e%rs_day_world%/%rs_month_world%/%rs_year_world%"
+        - "&7溫度系統: &c已啟用"
+        - "&7領地系統: &a已啟用"
+
+# 玩家加入 MOTD 設定
+player_join_motd:
+  enabled: true
+  motd:
+    - ""
+    - "&6⚒ &f麻糬咕嚕嚕呼嚕嚕現實生存 &6⚒"
+    - ""
+    - "&7• &f線上人數: &e%online%&7/&e%max% &7| &fTPS: &a%tps% &7| &fPing: &a%ping%ms"
+    - "&7• &f目前世界: &e%world% &7| &f目前季節: &a%rs_season%"
+    - "&7• &f目前溫度: &f%rs_temperature% &7(&f%rs_temperaturecolor%%rs_temperature_int_celcius%°C&7)"
+    - "&7• &f領地系統: &e/c claim &7建立領地 | &f資源世界: &e/resource tp"
+    - "&7• &f生存提示: 保持溫度在適中範圍，小心口渴和飢餓!"
+    - "&7• &f遊戲日期: &e%rs_month_asname% %rs_day%, %rs_year%年 &7| &f季節長度: &e%rs_seasonlength%天"
+    - ""
