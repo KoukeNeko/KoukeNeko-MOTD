@@ -3,6 +3,8 @@ package dev.doeshing.koukeNekoMOTD;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -23,6 +25,9 @@ import java.util.Map;
  * 採用 Paper 內建的 PaperServerListPingEvent 處理伺服器列表 MOTD，不依賴 ProtocolLib。
  */
 public class MotdManager implements Listener {
+
+    // HEX 顏色代碼 Pattern (匹配 &#RRGGBB 格式)
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     private final Map<InetAddress, String> lastPlayerNameByIp = new ConcurrentHashMap<>();
 
@@ -144,10 +149,68 @@ public class MotdManager implements Listener {
             }
         }
         
-        // 處理顏色代碼
+        // 處理 HEX 顏色代碼 (&#RRGGBB 格式)
+        result = processHexColors(result);
+        
+        // 處理傳統顏色代碼
         return ChatColor.translateAlternateColorCodes('&', result);
     }
 
+    /**
+     * 處理 HEX 顏色代碼
+     * 將 &#RRGGBB 格式轉換為 §x§R§R§G§G§B§B 格式
+     *
+     * @param text 包含 HEX 顏色代碼的文字
+     * @return 轉換後的文字
+     */
+    private String processHexColors(String text) {
+        if (text == null) {
+            return "";
+        }
+        
+        // 早期版本可能不支援 HEX 色碼，先檢查伺服器版本
+        // 如果伺服器版本低於 1.16，則不進行處理
+        try {
+            String version = Bukkit.getServer().getVersion();
+            if (version.contains("1.8") || version.contains("1.9") || 
+                version.contains("1.10") || version.contains("1.11") || 
+                version.contains("1.12") || version.contains("1.13") || 
+                version.contains("1.14") || version.contains("1.15")) {
+                plugin.getLogger().warning("HEX 顏色代碼在 1.16 以下的版本不受支援！");
+                return text;
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("檢查伺服器版本時發生錯誤: " + e.getMessage());
+        }
+        
+        // 使用 Matcher 搜尋並替換所有 HEX 顏色代碼
+        Matcher matcher = HEX_PATTERN.matcher(text);
+        StringBuffer buffer = new StringBuffer();
+        
+        while (matcher.find()) {
+            String hexCode = matcher.group(1);
+            String replacement = translateHexColorCodes(hexCode);
+            matcher.appendReplacement(buffer, replacement);
+        }
+        
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+    
+    /**
+     * 將 HEX 顏色代碼轉換為 Minecraft 格式
+     *
+     * @param hexCode HEX 顏色代碼 (不含 # 號)
+     * @return Minecraft 格式顏色代碼
+     */
+    private String translateHexColorCodes(String hexCode) {
+        StringBuilder result = new StringBuilder("§x");
+        for (char c : hexCode.toCharArray()) {
+            result.append("§").append(c);
+        }
+        return result.toString();
+    }
+    
     private void loadConfigValues(FileConfiguration config) {
         // 讀取 server_list_motd 設定
         ConfigurationSection slSection = config.getConfigurationSection("server_list_motd");
